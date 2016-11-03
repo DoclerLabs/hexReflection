@@ -1,2 +1,2 @@
 # hexReflection
-Reflection building system at compile-time
+Fast class description builder to output lightweight reflection data and replace rtti (class description parsing at compile time)

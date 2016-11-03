@@ -1,0 +1,16 @@
+{
+  "name": "hexreflection",
+  "license": "MIT",
+  "classPath": "src",
+  "tags": ["haxe", "ioc", "reflection", "annotation", "hexmachina"],
+  "description": "Fast class description builder to output lightweight reflection data (class description parsing at compile time)",
+  "contributors": ["doclerlabs"],
+  "releasenote": "First implementation",
+  "version": "0.9.0",
+  "url": "https://github.com/DoclerLabs/hexReflection",
+  "dependencies": 
+  {
+	"hexcore": "git:https://github.com/DoclerLabs/hexCore.git",
+	"hexannotation": "git:https://github.com/DoclerLabs/hexAnnotation.git"
+  }
+}
