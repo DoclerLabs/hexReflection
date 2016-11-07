@@ -7,5 +7,5 @@ package hex.reflect;
 class ReflectSuite
 {
 	@Suite( "Reflect suite" )
-    public var list : Array<Class<Dynamic>> = [ ReflectTest ];
+    public var list : Array<Class<Dynamic>> = [ ReflectionBuilderTest, ReflectTest ];
 }
