@@ -5,6 +5,6 @@ package hex.reflect;
  */
 typedef ArgumentReflectionData =
 {
-	argumentName 		: String,
-	argumentType 		: String	
+	name 		: String,
+	type 		: String	
 }

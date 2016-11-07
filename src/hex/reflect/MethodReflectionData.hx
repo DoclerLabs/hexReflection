@@ -7,5 +7,5 @@ typedef MethodReflectionData =
 {
 	annotations		: Array<AnnotationReflectionData>,
 	arguments		: Array<ArgumentReflectionData>,
-	methodName 		: String
+	name 			: String
 }

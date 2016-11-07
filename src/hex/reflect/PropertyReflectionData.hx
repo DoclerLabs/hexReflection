@@ -6,6 +6,6 @@ package hex.reflect;
 typedef PropertyReflectionData =
 {
 	annotations			: Array<AnnotationReflectionData>,
-	propertyName 		: String,
-	propertyType 		: String
+	name 				: String,
+	type 				: String
 }

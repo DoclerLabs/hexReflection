@@ -24,7 +24,7 @@ class ClassReflectionDataProvider implements IClassReflectionDataProvider
 	
 	function _getClassReflectionData( type : Class<Dynamic>)  : ClassReflectionData
     {
-		var field : ClassReflectionData = Reflect.getProperty( type, "__INJECTION_DATA" );
+		var field : ClassReflectionData = Reflect.getProperty( type, ReflectionBuilder.REFLECTION );
 		
 		if ( field != null )
 		{

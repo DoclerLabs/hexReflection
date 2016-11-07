@@ -2,7 +2,7 @@ package hex.reflect;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
-import hex.error.PrivateConstructorException;
+using haxe.macro.Tools;
 
 /**
  * ...
@@ -10,14 +10,16 @@ import hex.error.PrivateConstructorException;
  */
 class ReflectionBuilder 
 {
+	//static property name that will handle the data
+	public static inline var REFLECTION : String = "__REFLECTION";
+	
 	public static var _static_classes : Array<ClassReflectionData> = [];
 
 	/** @private */
     function new()
     {
-        throw new PrivateConstructorException( "This class can't be instantiated." );
+        throw new hex.error.PrivateConstructorException( "This class can't be instantiated." );
     }
-
 	macro public static function readMetadata( metadataExpr : Expr, allowedAnnotations : Array<String> = null ) : Array<Field>
 	{
 		var localClass = Context.getLocalClass().get();
@@ -31,7 +33,7 @@ class ReflectionBuilder
 		//append the expression as a field
 		fields.push(
 		{
-			name:  "__INJECTION_DATA",
+			name:  ReflectionBuilder.REFLECTION,
 			access:  [ Access.APublic, Access.AStatic ],
 			kind: FieldType.FVar( macro: hex.reflect.ClassReflectionData, macro $v{ data } ), 
 			pos: Context.currentPos(),
@@ -41,7 +43,7 @@ class ReflectionBuilder
 	}
 	
 	#if macro
-	public static function parseMetadata( metadataExpr : Expr, classFields : Array<Field>, allowedAnnotations : Array<String> = null, displayWarning : Bool = false ) : Array<Field>
+	public static function parseMetadata( metadataExpr : Expr, classFields : Array<Field>, annotationFilter : Array<String> = null, displayWarning : Bool = false ) : Array<Field>
 	{
 		//parse metadata name
 		var metadataName = switch( metadataExpr.expr )
@@ -62,10 +64,10 @@ class ReflectionBuilder
 			default: null;
 		}
 		
-		return ReflectionBuilder._parseMetadata( metadataName, classFields, allowedAnnotations, displayWarning );
+		return ReflectionBuilder._parseMetadata( metadataName, classFields, annotationFilter, displayWarning );
 	}
 	
-	static function _getAnnotations( f : Field, allowedAnnotations : Array<String> = null, displayWarning : Bool = false ) : Array<AnnotationReflectionData>
+	static function _getAnnotations( f : Field, annotationFilter : Array<String> = null, displayWarning : Bool = false ) : Array<AnnotationReflectionData>
 	{
 		var annotationDatas : Array<AnnotationReflectionData> = [];
 		
@@ -74,7 +76,7 @@ class ReflectionBuilder
 		{
 			var m = f.meta[ metaID ];
 			var annotationKeys : Array<Dynamic> = [];
-			if ( allowedAnnotations == null || allowedAnnotations.indexOf( m.name )  != -1 )
+			if ( annotationFilter == null || annotationFilter.indexOf( m.name )  != -1 )
 			{
 				for ( param in m.params )
 				{
@@ -130,8 +132,41 @@ class ReflectionBuilder
 		return annotationDatas;
 	}
 	
-	static function _parseMetadata( metadataName : String, classFields : Array<Field>, allowedAnnotations : Array<String> = null, displayWarning : Bool = false ) : Array<Field>
+	static function _getMemberDescription( f, p : TypePath ) : MemberDescription
 	{
+		var t : haxe.macro.Type = null;
+		
+		try
+		{
+			t = Context.getType( p.pack.concat( [ p.name ] ).join( '.' ) );
+		}
+		catch ( e : Dynamic )
+		{
+			Context.error( e, f.pos );
+		}
+		
+		var propertyType : String = "";
+		switch ( t )
+		{
+			case TInst( t, p ):
+				var ct = t.get();
+				propertyType = ct.pack.concat( [ct.name] ).join( '.' );
+				
+			case TAbstract( t, params ):
+				propertyType = t.toString();
+				
+			case TDynamic( t ):
+				propertyType = "Dynamic";
+				
+			default:
+		}
+		
+		return { name: f.name, type: propertyType };
+	}
+	
+	static function _parseMetadata( metadataName : String, classFields : Array<Field>, annotationFilter : Array<String> = null, displayWarning : Bool = false ) : Array<Field>
+	{
+		var hasFilter = annotationFilter != null && annotationFilter.length > 0;
 		var localClass = Context.getLocalClass().get();
 		var superClassName : String;
 		var superClassAnnotationData : ClassReflectionData = null;
@@ -166,75 +201,25 @@ class ReflectionBuilder
 
 		for ( f in classFields )
 		{
-			var annotationDatas = ReflectionBuilder._getAnnotations( f, allowedAnnotations, displayWarning );
+			var annotationDatas = hasFilter ? ReflectionBuilder._getAnnotations( f, annotationFilter, displayWarning ) : [];
 
-			if ( annotationDatas.length > 0 )
+			if ( !hasFilter || annotationDatas.length > 0 )
 			{
 				switch ( f.kind )
 				{
-					case FVar( TPath( p ), e ):
-						var t : haxe.macro.Type = null;
-						try
-						{
-							t = Context.getType( p.pack.concat( [ p.name ] ).join( '.' ) );
-						}
-						catch ( e : Dynamic )
-						{
-							Context.error( e, f.pos );
-						}
-						
-						var propertyType : String = "";
-						switch ( t )
-						{
-							case TInst( t, p ):
-								var ct = t.get();
-								propertyType = ct.pack.concat( [ct.name] ).join( '.' );
-								
-							case TAbstract( t, params ):
-								propertyType = t.toString();
-								
-							case TDynamic( t ):
-								propertyType = "Dynamic";
-								
-							default:
-						}
-
-						properties.push( { annotations: annotationDatas, propertyName: f.name, propertyType: propertyType } );
+					case FVar( t, e ):
+						//trace( t.toType().toString() );
+						properties.push( { annotations: annotationDatas, name: f.name, type: t.toType().toString() } );
 
 					case FFun( func ) :
-						var argumentDatas : Array<hex.annotation.ArgumentData> = [];
+						var argumentDatas : Array<ArgumentReflectionData> = [];
 						for ( arg in func.args )
 						{
 							switch ( arg.type )
 							{
 								case TPath( p ):
-									var t : haxe.macro.Type = null;
-									try
-									{
-										t = Context.getType( p.pack.concat( [ p.name ] ).join( '.' ) );
-									}
-									catch ( e : Dynamic )
-									{
-										Context.error( e, f.pos );
-									}
-
-									var argumentType : String = "";
-									switch ( t )
-									{
-										case TInst( t, p ):
-											var ct = t.get();
-											argumentType = ct.pack.concat( [ct.name] ).join( '.' );
-											
-										case TAbstract( t, params ):
-											argumentType = t.toString();
-											
-										case TDynamic( t ):
-											argumentType = "Dynamic";
-											
-										default:
-									}
-
-									argumentDatas.push( { argumentName: arg.name, argumentType: argumentType } );
+									//trace( arg.type.toType().toString() );
+									argumentDatas.push( { name: arg.name, type: arg.type.toType().toString() } );
 
 								default:
 							}
@@ -242,7 +227,7 @@ class ReflectionBuilder
 
 						if ( f.name == "new" )
 						{
-							constructorAnnotationData = { annotations: annotationDatas, arguments: argumentDatas, methodName: f.name };
+							constructorAnnotationData = { annotations: annotationDatas, arguments: argumentDatas, name: f.name };
 						}
 						else
 						{
@@ -252,7 +237,7 @@ class ReflectionBuilder
 								var superMethodAnnotationDatas : Array<MethodReflectionData> = superClassAnnotationData.methods;
 								for ( superMethodAnnotationData in  superMethodAnnotationDatas )
 								{
-									if ( superMethodAnnotationData.methodName == methodName )
+									if ( superMethodAnnotationData.name == methodName )
 									{
 										methods.splice( methods.indexOf( superMethodAnnotationData ), 1 );
 										break;
@@ -260,7 +245,7 @@ class ReflectionBuilder
 								}
 							}
 
-							methods.push( { annotations: annotationDatas, arguments: argumentDatas, methodName: f.name } );
+							methods.push( { annotations: annotationDatas, arguments: argumentDatas, name: f.name } );
 						}
 
 					default: null;
@@ -273,4 +258,10 @@ class ReflectionBuilder
 		return classFields;
 	}
 	#end
+}
+
+typedef MemberDescription =
+{
+	var name : String;
+	var type : String;
 }

@@ -6,9 +6,7 @@ import hex.reflect.mock.IMockAnnotationContainer;
 import hex.reflect.mock.MockAnnotationContainer;
 import hex.reflect.mock.MockContainerWithoutAnnotation;
 import hex.reflect.mock.MockExtendedAnnotationContainer;
-import hex.domain.Domain;
-import hex.log.ILogger;
-import hex.log.Logger;
+import hex.reflect.mock.MockReflectionContainer;
 import hex.unittest.assertion.Assert;
 
 /**
@@ -50,16 +48,16 @@ class ReflectionBuilderTest
     {
         var data = ReflectionBuilderTest._annotationProvider.getClassReflectionData( MockAnnotationContainer );
         Assert.isNotNull( data.constructor, "constructor annotation data shouldn't be null" );
-        Assert.equals( "new", data.constructor.methodName, "constructor 'methodName' should be 'new'" );
+        Assert.equals( "new", data.constructor.name, "constructor 'methodName' should be 'new'" );
 
         Assert.equals( 2, data.constructor.arguments.length, "argument length should be 2" );
         var arg0 = data.constructor.arguments[ 0 ];
-        Assert.equals( "domain", arg0.argumentName, "argument name should be the same" );
-        Assert.equals( Type.getClassName( Domain ), arg0.argumentType, "argument type should be the same" );
+        Assert.equals( "domain", arg0.name, "argument name should be the same" );
+        Assert.equals( "hex.domain.Domain", arg0.type, "argument type should be the same" );
 
         var arg1 = data.constructor.arguments[ 1 ];
-        Assert.equals( "logger", arg1.argumentName, "argument name should be the same" );
-        Assert.equals( Type.getClassName( ILogger ), arg1.argumentType, "argument type should be the same" );
+        Assert.equals( "logger", arg1.name, "argument name should be the same" );
+        Assert.equals( "hex.log.ILogger", arg1.type, "argument type should be the same" );
 
         Assert.equals( 1, data.constructor.annotations.length, "annotation length should be 1" );
         var annotationData = data.constructor.annotations[ 0 ];
@@ -74,8 +72,8 @@ class ReflectionBuilderTest
         Assert.equals( 2, data.properties.length, "properties length should be 2" );
 
         var property0 = data.properties[ 0 ];
-        Assert.equals( "property", property0.propertyName, "property name should be the same" );
-        Assert.equals( Type.getClassName( Logger ), property0.propertyType, "property type should be the same" );
+        Assert.equals( "property", property0.name, "property name should be the same" );
+        Assert.equals( "hex.log.Logger", property0.type, "property type should be the same" );
 
         Assert.equals( 2, property0.annotations.length, "annotation length should be 2" );
         var annotationData0 = property0.annotations[ 0 ];
@@ -86,9 +84,8 @@ class ReflectionBuilderTest
         Assert.deepEquals( ["fr"], annotationData1.annotationKeys, "annotation keys should be the same" );
 
         var property1 = data.properties[ 1 ];
-        Assert.equals( "_privateProperty", property1.propertyName, "property name should be the same" );
-        Assert.equals( "Int", property1.propertyType, "property type should be the same" );
-
+        Assert.equals( "_privateProperty", property1.name, "property name should be the same" );
+        Assert.equals( "Int", property1.type, "property type should be the same" );
 
         Assert.equals( 2, property1.annotations.length, "annotation length should be 2" );
         var annotationData2 = property1.annotations[ 0 ];
@@ -106,18 +103,18 @@ class ReflectionBuilderTest
         Assert.equals( 2, data.methods.length, "methods length should be 3" );
 
         var method0 = data.methods[ 0 ];
-        Assert.equals( "testMethodWithPrim", method0.methodName, "method name should be the same" );
+        Assert.equals( "testMethodWithPrim", method0.name, "method name should be the same" );
         Assert.equals( 5, method0.arguments.length, "argument length should be 5" );
-        Assert.equals( method0.arguments[ 0 ].argumentName, "i", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 0 ].argumentType, "Int", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 1 ].argumentName, "u", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 1 ].argumentType, "UInt", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 2 ].argumentName, "b", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 2 ].argumentType, "Bool", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 3 ].argumentName, "s", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 3 ].argumentType, "String", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 4 ].argumentName, "f", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 4 ].argumentType, "Float", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 0 ].name, "i", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 0 ].type, "Int", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 1 ].name, "u", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 1 ].type, "UInt", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 2 ].name, "b", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 2 ].type, "Bool", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 3 ].name, "s", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 3 ].type, "String", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 4 ].name, "f", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 4 ].type, "Float", "argument data should be the same" );
 
         Assert.equals( 2, method0.annotations.length, "annotation length should be 2" );
         var annotationData0 = method0.annotations[ 0 ];
@@ -128,10 +125,10 @@ class ReflectionBuilderTest
         Assert.equals( 0, annotationData1.annotationKeys[ 0 ], "annotation keys should be the same" );
 
         var method1 = data.methods[ 1 ];
-        Assert.equals( "_methodToOverride", method1.methodName, "method name should be the same" );
+        Assert.equals( "_methodToOverride", method1.name, "method name should be the same" );
         Assert.equals( 1, method1.arguments.length, "argument length should be 1" );
-        Assert.equals( method1.arguments[ 0 ].argumentName, "element", "argument data should be the same" );
-        Assert.equals( method1.arguments[ 0 ].argumentType, "hex.log.Logger", "argument data should be the same" );
+        Assert.equals( method1.arguments[ 0 ].name, "element", "argument data should be the same" );
+        Assert.equals( method1.arguments[ 0 ].type, "hex.log.Logger", "argument data should be the same" );
 
         Assert.equals( 3, method1.annotations.length, "annotation length should be 3" );
         var annotationData0 = method1.annotations[ 0 ];
@@ -150,21 +147,21 @@ class ReflectionBuilderTest
     {
         var data : ClassReflectionData = ReflectionBuilderTest._annotationProvider.getClassReflectionData( MockExtendedAnnotationContainer );
         Assert.isNotNull( data.constructor, "constructor annotation data shouldn't be null" );
-        Assert.equals( "new", data.constructor.methodName, "constructor 'methodName' should be 'new'" );
+        Assert.equals( "new", data.constructor.name, "constructor 'methodName' should be 'new'" );
 
         Assert.equals( 3, data.constructor.arguments.length, "argument length should be 3" );
 
         var arg0 = data.constructor.arguments[ 0 ];
-        Assert.equals( "a", arg0.argumentName, "argument name should be the same" );
-        Assert.equals( Type.getClassName( Array ), arg0.argumentType, "argument type should be the same" );
+        Assert.equals( "a", arg0.name, "argument name should be the same" );
+        Assert.equals( "Array<String>", arg0.type, "argument type should be the same" );
 
         var arg1 = data.constructor.arguments[ 1 ];
-        Assert.equals( "extendedDomain", arg1.argumentName, "argument name should be the same" );
-        Assert.equals( Type.getClassName( Domain ), arg1.argumentType, "argument type should be the same" );
+        Assert.equals( "extendedDomain", arg1.name, "argument name should be the same" );
+        Assert.equals( "hex.domain.Domain", arg1.type, "argument type should be the same" );
 
         var arg2 = data.constructor.arguments[ 2 ];
-        Assert.equals( "extendedLogger", arg2.argumentName, "argument name should be the same" );
-        Assert.equals( Type.getClassName( ILogger ), arg2.argumentType, "argument type should be the same" );
+        Assert.equals( "extendedLogger", arg2.name, "argument name should be the same" );
+        Assert.equals( "hex.log.ILogger", arg2.type, "argument type should be the same" );
 
         Assert.equals( 2, data.constructor.annotations.length, "annotation length should be 2" );
         var annotationData0 = data.constructor.annotations[ 0 ];
@@ -182,8 +179,8 @@ class ReflectionBuilderTest
         Assert.equals( 3, data.properties.length, "properties length should be 3" );
 
         var property0 = data.properties[ 0 ];
-        Assert.equals( "property", property0.propertyName, "property name should be the same" );
-        Assert.equals( Type.getClassName( Logger ), property0.propertyType, "property type should be the same" );
+        Assert.equals( "property", property0.name, "property name should be the same" );
+        Assert.equals( "hex.log.Logger", property0.type, "property type should be the same" );
 
         Assert.equals( 2, property0.annotations.length, "annotation length should be 2" );
         var annotationData0 = property0.annotations[ 0 ];
@@ -194,8 +191,8 @@ class ReflectionBuilderTest
         Assert.deepEquals( ["fr"], annotationData1.annotationKeys, "annotation keys should be the same" );
 
         var property1 = data.properties[ 1 ];
-        Assert.equals( "_privateProperty", property1.propertyName, "property name should be the same" );
-        Assert.equals( "Int", property1.propertyType, "property type should be the same" );
+        Assert.equals( "_privateProperty", property1.name, "property name should be the same" );
+        Assert.equals( "Int", property1.type, "property type should be the same" );
 
         Assert.equals( 2, property1.annotations.length, "annotation length should be 2" );
         var annotationData2 = property1.annotations[ 0 ];
@@ -206,8 +203,8 @@ class ReflectionBuilderTest
         Assert.deepEquals( ["en"], annotationData3.annotationKeys, "annotation keys should be the same" );
 
         var property2 = data.properties[ 2 ];
-        Assert.equals( "anotherProperty", property2.propertyName, "property name should be the same" );
-        Assert.equals( "Bool", property2.propertyType, "property type should be the same" );
+        Assert.equals( "anotherProperty", property2.name, "property name should be the same" );
+        Assert.equals( "Bool", property2.type, "property type should be the same" );
 
         Assert.equals( 2, property2.annotations.length, "annotation length should be 2" );
         var annotationData3 = property2.annotations[ 0 ];
@@ -226,18 +223,18 @@ class ReflectionBuilderTest
         Assert.equals( 3, data.methods.length, "methods length should be 3" );
 
         var method0 = data.methods[ 0 ];
-        Assert.equals( "testMethodWithPrim", method0.methodName, "method name should be the same" );
+        Assert.equals( "testMethodWithPrim", method0.name, "method name should be the same" );
         Assert.equals( 5, method0.arguments.length, "argument length should be 5" );
-        Assert.equals( method0.arguments[ 0 ].argumentName, "i", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 0 ].argumentType, "Int", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 1 ].argumentName, "u", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 1 ].argumentType, "UInt", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 2 ].argumentName, "b", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 2 ].argumentType, "Bool", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 3 ].argumentName, "s", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 3 ].argumentType, "String", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 4 ].argumentName, "f", "argument data should be the same" );
-        Assert.equals( method0.arguments[ 4 ].argumentType, "Float", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 0 ].name, "i", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 0 ].type, "Int", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 1 ].name, "u", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 1 ].type, "UInt", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 2 ].name, "b", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 2 ].type, "Bool", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 3 ].name, "s", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 3 ].type, "String", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 4 ].name, "f", "argument data should be the same" );
+        Assert.equals( method0.arguments[ 4 ].type, "Float", "argument data should be the same" );
 
         Assert.equals( 2, method0.annotations.length, "annotation length should be 2" );
         var annotationData0 = method0.annotations[ 0 ];
@@ -248,10 +245,10 @@ class ReflectionBuilderTest
         Assert.equals( 0, annotationData1.annotationKeys[ 0 ], "annotation keys should be the same" );
 
         var method1 = data.methods[ 1 ];
-        Assert.equals( "_methodToOverride", method1.methodName, "method name should be the same" );
+        Assert.equals( "_methodToOverride", method1.name, "method name should be the same" );
         Assert.equals( 1, method1.arguments.length, "argument length should be 1" );
-        Assert.equals( method1.arguments[ 0 ].argumentName, "element", "argument data should be the same" );
-        Assert.equals( method1.arguments[ 0 ].argumentType, "hex.log.Logger", "argument data should be the same" );
+        Assert.equals( method1.arguments[ 0 ].name, "element", "argument data should be the same" );
+        Assert.equals( method1.arguments[ 0 ].type, "hex.log.Logger", "argument data should be the same" );
 
         Assert.equals( 3, method1.annotations.length, "annotation length should be 3" );
         var annotationData0 = method1.annotations[ 0 ];
@@ -265,10 +262,10 @@ class ReflectionBuilderTest
         Assert.equals( false, annotationData2.annotationKeys[ 0 ], "annotation keys should be the same" );
 
         var method2 = data.methods[ 2 ];
-        Assert.equals( "anotherTestMethod", method2.methodName, "method name should be the same" );
+        Assert.equals( "anotherTestMethod", method2.name, "method name should be the same" );
         Assert.equals( 1, method2.arguments.length, "argument length should be 1" );
-        Assert.equals( method2.arguments[ 0 ].argumentName, "f", "argument data should be the same" );
-        Assert.equals( method2.arguments[ 0 ].argumentType, "Float", "argument data should be the same" );
+        Assert.equals( method2.arguments[ 0 ].name, "f", "argument data should be the same" );
+        Assert.equals( method2.arguments[ 0 ].type, "Float", "argument data should be the same" );
 
         Assert.equals( 2, method2.annotations.length, "annotation length should be 2" );
         var annotationData0 = method2.annotations[ 0 ];
@@ -278,4 +275,21 @@ class ReflectionBuilderTest
         Assert.equals( "PostConstruct", annotationData1.annotationName, "annotation name should be the same" );
         Assert.equals( 2, annotationData1.annotationKeys[ 0 ], "annotation keys should be the same" );
     }
+	
+	@Test( "test get reflection data without annotation filter" )
+	public function testGetReflectionDataWithoutAnnotationFilter() : Void
+	{
+		var data = ReflectionBuilderTest._annotationProvider.getClassReflectionData( MockReflectionContainer );
+        
+		Assert.equals( 1, data.properties.length );
+        var property = data.properties[ 0 ];
+        Assert.equals( "genericProperty", property.name );
+        Assert.equals( "Array<Array<Bool>>", property.type );
+		
+		Assert.equals( 1, data.methods.length );
+		var method = data.methods[ 0 ];
+        Assert.equals( "doSomething", method.name );
+        Assert.equals( "Int", method.arguments[ 0 ].type );
+        Assert.equals( "Array<Array<String>>", method.arguments[ 1 ].type );
+	}
 }
