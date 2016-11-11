@@ -145,23 +145,40 @@ class ReflectionBuilder
 			Context.error( e, f.pos );
 		}
 		
-		var propertyType : String = "";
+		var type : String = "";
 		switch ( t )
 		{
 			case TInst( t, p ):
 				var ct = t.get();
-				propertyType = ct.pack.concat( [ct.name] ).join( '.' );
+				type = ct.pack.concat( [ct.name] ).join( '.' );
 				
 			case TAbstract( t, params ):
-				propertyType = t.toString();
+				type = t.toString();
 				
 			case TDynamic( t ):
-				propertyType = "Dynamic";
+				type = "Dynamic";
+			
+			case TAnonymous( a ):
+				type = "";
 				
-			default:
+			case TEnum( t, params ):
+				type = "";
+				
+			case TFun( args, ret ):
+				type = "";
+				
+			case TLazy ( f ):
+				type = "";
+				
+			case TMono( t ):
+				type = "";
+				
+			case TType( t, params ):
+				type = "";
+
 		}
 		
-		return { name: f.name, type: propertyType };
+		return { name: f.name, type: type };
 	}
 	
 	static function _parseMetadata( metadataName : String, classFields : Array<Field>, annotationFilter : Array<String> = null, displayWarning : Bool = false ) : Array<Field>
