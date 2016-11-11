@@ -132,7 +132,7 @@ class ReflectionBuilder
 		return annotationDatas;
 	}
 	
-	static function _getMemberDescription( f, p : TypePath ) : MemberDescription
+	/*static function _getMemberDescription( f, p : TypePath ) : MemberDescription
 	{
 		var t : haxe.macro.Type = null;
 		
@@ -179,7 +179,7 @@ class ReflectionBuilder
 		}
 		
 		return { name: f.name, type: type };
-	}
+	}*/
 	
 	static function _parseMetadata( metadataName : String, classFields : Array<Field>, annotationFilter : Array<String> = null, displayWarning : Bool = false ) : Array<Field>
 	{
