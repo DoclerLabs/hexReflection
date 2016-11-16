@@ -37,7 +37,7 @@ script:
   - if [ $TRAVIS_HAXE_VERSION != "3.2.1" ]; then haxe build-php.hxml && php bin/index.php; fi
   - haxe build-neko.hxml         && neko bin/MainReflectionTest.n
   - haxe build-js.hxml           && node bin/MainReflectionTest.js
-  - haxe build-flash.hxml -D fdb && haxe flash/run.hxml bin/MainReflectionTest.swf
+  - if [ $TRAVIS_HAXE_VERSION != "3.2.1" ]; then haxe build-flash.hxml -D fdb && haxe flash/run.hxml bin/MainReflectionTest.swf; fi
   
 notifications:
   email:
