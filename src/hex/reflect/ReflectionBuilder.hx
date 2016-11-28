@@ -225,8 +225,7 @@ class ReflectionBuilder
 				switch ( f.kind )
 				{
 					case FVar( t, e ):
-						//trace( t.toType().toString() );
-						properties.push( { annotations: annotationDatas, name: f.name, type: t.toType().toString() } );
+						properties.push( { annotations: annotationDatas, name: f.name, type: t.toType().toString().split(' ').join( '' ) } );
 
 					case FFun( func ) :
 						var argumentDatas : Array<ArgumentReflectionData> = [];
@@ -235,8 +234,7 @@ class ReflectionBuilder
 							switch ( arg.type )
 							{
 								case TPath( p ):
-									//trace( arg.type.toType().toString() );
-									argumentDatas.push( { name: arg.name, type: arg.type.toType().toString() } );
+									argumentDatas.push( { name: arg.name, type: arg.type.toType().toString().split(' ').join( '' ) } );
 
 								default:
 							}
