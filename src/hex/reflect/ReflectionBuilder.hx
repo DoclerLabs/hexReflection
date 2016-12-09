@@ -78,47 +78,52 @@ class ReflectionBuilder
 			var annotationKeys : Array<Dynamic> = [];
 			if ( annotationFilter == null || annotationFilter.indexOf( m.name )  != -1 )
 			{
-				for ( param in m.params )
+				if ( m.params != null )
 				{
-					switch( param.expr )
+					for ( param in m.params )
 					{
-						case EConst( c ):
-							switch ( c )
-							{
-								case CInt( s ):
-									var i = Std.parseInt( s );
-									annotationKeys.push(  ( i != null ) ? i : Std.parseFloat( s ) ); // if the number exceeds standard int return as float
+						switch( param.expr )
+						{
+							case EConst( c ):
+								switch ( c )
+								{
+									case CInt( s ):
+										var i = Std.parseInt( s );
+										annotationKeys.push(  ( i != null ) ? i : Std.parseFloat( s ) ); // if the number exceeds standard int return as float
 
-								case CFloat( s ):
-									annotationKeys.push(  Std.parseFloat( s ) );
+									case CFloat( s ):
+										annotationKeys.push(  Std.parseFloat( s ) );
 
-								case CString( s ):
-									annotationKeys.push( s );
+									case CString( s ):
+										annotationKeys.push( s );
 
-								case CIdent( "null" ):
-									annotationKeys.push( null );
+									case CIdent( "null" ):
+										annotationKeys.push( null );
 
-								case CIdent( "true" ):
-									annotationKeys.push( true );
+									case CIdent( "true" ):
+										annotationKeys.push( true );
 
-								case CIdent("false"):
-									annotationKeys.push( false );
+									case CIdent("false"):
+										annotationKeys.push( false );
 
-								case CRegexp( r, opt ):
-									//do nothing
+									case CRegexp( r, opt ):
+										//do nothing
 
-								case CIdent( v ):
-									annotationKeys.push( hex.util.MacroUtil.getClassNameFromExpr( param ) );
+									case CIdent( v ):
+										annotationKeys.push( hex.util.MacroUtil.getClassNameFromExpr( param ) );
 
-								default: 
-									null;
-							}
-						case EField( e, field ):
-							annotationKeys.push( haxe.macro.ExprTools.toString( e ) + "." + field );
+									default: 
+										null;
+								}
+								
+							case EField( e, field ):
+								annotationKeys.push( haxe.macro.ExprTools.toString( e ) + "." + field );
 
-						default: null;
+							default: null;
+						}
 					}
 				}
+				
 				annotationDatas.unshift( { annotationName: m.name, annotationKeys: annotationKeys } );
 				f.meta.remove( m );//remove metadata
 			}
