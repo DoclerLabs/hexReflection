@@ -34,7 +34,6 @@ before_install:
 
 install:
   - git clone --recursive -b $DEPENDENCIES_BRANCH https://github.com/DoclerLabs/hexCore.git ./hexcore
-  - git clone --recursive -b $DEPENDENCIES_BRANCH https://github.com/DoclerLabs/hexAnnotation.git ./hexannotation
   - git clone --recursive -b $DEPENDENCIES_BRANCH https://github.com/DoclerLabs/hexUnit.git ./hexunit
   - git clone --recursive https://github.com/chipshort/hexDoc-Theme.git ./hexdoctheme
   - export DISPLAY=:99.0;
