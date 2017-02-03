@@ -18,7 +18,7 @@ class ReflectionBuilder
 	/** @private */
     function new()
     {
-        throw new hex.error.PrivateConstructorException( "This class can't be instantiated." );
+        throw new hex.error.PrivateConstructorException();
     }
 	macro public static function readMetadata( metadataExpr : Expr, allowedAnnotations : Array<String> = null ) : Array<Field>
 	{
