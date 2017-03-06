@@ -6,7 +6,7 @@
   "description": "Fast class description builder to output lightweight reflection data (class description parsing at compile time)",
   "contributors": ["doclerlabs"],
   "releasenote": "First implementation",
-  "version": "0.9.0",
+  "version": "git",
   "url": "https://github.com/DoclerLabs/hexReflection",
   "dependencies": 
   {
