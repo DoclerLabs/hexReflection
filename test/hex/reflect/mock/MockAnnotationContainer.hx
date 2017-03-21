@@ -28,11 +28,7 @@ class MockAnnotationContainer extends MockContainerWithoutAnnotation implements 
 	//TODO add test for function parameters annotations
 	@Test( "testMethodWithPrimMetadata" )
 	@PostConstruct( 0 )
-	#if ( haxe_ver >= "3.3" )
 	public function testMethodWithPrim( i : Int, u : UInt, b : Bool, @RequestParam( { value: "name", required: false, defaultValue: "World" } ) s : String, f : Float ) : Void
-	#else
-	public function testMethodWithPrim( i : Int, u : UInt, b : Bool, s : String, f : Float ) : Void
-	#end
 	{
 		//
 	}
