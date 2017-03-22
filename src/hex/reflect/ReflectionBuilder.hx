@@ -137,55 +137,6 @@ class ReflectionBuilder
 		return annotationDatas;
 	}
 	
-	/*static function _getMemberDescription( f, p : TypePath ) : MemberDescription
-	{
-		var t : haxe.macro.Type = null;
-		
-		try
-		{
-			t = Context.getType( p.pack.concat( [ p.name ] ).join( '.' ) );
-		}
-		catch ( e : Dynamic )
-		{
-			Context.error( e, f.pos );
-		}
-		
-		var type : String = "";
-		switch ( t )
-		{
-			case TInst( t, p ):
-				var ct = t.get();
-				type = ct.pack.concat( [ct.name] ).join( '.' );
-				
-			case TAbstract( t, params ):
-				type = t.toString();
-				
-			case TDynamic( t ):
-				type = "Dynamic";
-			
-			case TAnonymous( a ):
-				type = "";
-				
-			case TEnum( t, params ):
-				type = "";
-				
-			case TFun( args, ret ):
-				type = "";
-				
-			case TLazy ( f ):
-				type = "";
-				
-			case TMono( t ):
-				type = "";
-				
-			case TType( t, params ):
-				type = "";
-
-		}
-		
-		return { name: f.name, type: type };
-	}*/
-	
 	static function _parseMetadata( metadataName : String, classFields : Array<Field>, annotationFilter : Array<String> = null, displayWarning : Bool = false ) : Array<Field>
 	{
 		var hasFilter = annotationFilter != null && annotationFilter.length > 0;
