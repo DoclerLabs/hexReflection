@@ -288,7 +288,7 @@ class ReflectionBuilderTest
 		
 		var typedefProperty = data.properties[ 1 ];
         Assert.equals( "typedefInsideAModule", typedefProperty.name );
-        Assert.equals( "hex.reflect.mock.pack.InternalTypedef", typedefProperty.type );
+        Assert.equals( "hex.reflect.mock.pack.MockModule.InternalTypedef", typedefProperty.type );
 		
 		Assert.equals( 1, data.methods.length );
 		var method = data.methods[ 0 ];

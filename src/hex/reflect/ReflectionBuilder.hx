@@ -181,7 +181,16 @@ class ReflectionBuilder
 				switch ( f.kind )
 				{
 					case FVar( t, e ):
-						properties.push( { annotations: annotationDatas, name: f.name, type: t.toType().toString().split(' ').join( '' ) } );
+						
+						var type = t.toType().toString().split(' ').join( '' );
+						switch ( t.toType() )
+						{
+							case TType( _.get().module => module, _ ): 
+								if ( type != module ) type = module + '.' + type.split('.').pop();
+							default: 
+						}
+						
+						properties.push( { annotations: annotationDatas, name: f.name, type: type } );
 
 					case FFun( func ) :
 						var argumentDatas : Array<ArgumentReflectionData> = [];
