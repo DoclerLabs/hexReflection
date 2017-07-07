@@ -2,7 +2,7 @@ package hex.reflect;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
-using haxe.macro.Tools;
+import hex.util.MacroUtil;
 
 /**
  * ...
@@ -181,7 +181,7 @@ class ReflectionBuilder
 				switch ( f.kind )
 				{
 					case FVar( t, e ):
-						properties.push( { annotations: annotationDatas, name: f.name, type: t.toType().toString().split(' ').join( '' ) } );
+						properties.push( { annotations: annotationDatas, name: f.name, type: MacroUtil.getFQCNFromComplexType( t ) } );
 
 					case FFun( func ) :
 						var argumentDatas : Array<ArgumentReflectionData> = [];
@@ -190,7 +190,7 @@ class ReflectionBuilder
 							switch ( arg.type )
 							{
 								case TPath( p ):
-									argumentDatas.push( { name: arg.name, type: arg.type.toType().toString().split(' ').join( '' ) } );
+									argumentDatas.push( { name: arg.name, type: MacroUtil.getFQCNFromComplexType( arg.type ) } );
 
 								default:
 							}

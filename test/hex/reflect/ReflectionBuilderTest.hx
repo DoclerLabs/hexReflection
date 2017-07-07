@@ -281,10 +281,14 @@ class ReflectionBuilderTest
 	{
 		var data = ReflectionBuilderTest._annotationProvider.getClassReflectionData( MockReflectionContainer );
         
-		Assert.equals( 1, data.properties.length );
-        var property = data.properties[ 0 ];
-        Assert.equals( "genericProperty", property.name );
-        Assert.equals( "Array<Array<Bool>>", property.type );
+		Assert.equals( 2, data.properties.length );
+        var genericProperty = data.properties[ 0 ];
+        Assert.equals( "genericProperty", genericProperty.name );
+        Assert.equals( "Array<Array<Bool>>", genericProperty.type );
+		
+		var typedefProperty = data.properties[ 1 ];
+        Assert.equals( "typedefInsideAModule", typedefProperty.name );
+        Assert.equals( "hex.reflect.mock.pack.MockModule.InternalTypedef", typedefProperty.type );
 		
 		Assert.equals( 1, data.methods.length );
 		var method = data.methods[ 0 ];
