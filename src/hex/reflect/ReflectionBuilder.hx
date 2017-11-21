@@ -147,7 +147,7 @@ class ReflectionBuilder
 		var superClass = Context.getLocalClass().get().superClass;
 		if ( superClass != null )
 		{
-			superClassName = superClass.t.get().module;
+			superClassName = superClass.t.get().pack.join( "." ) + "." + superClass.t.get().name;
 			for ( classAnnotationData in ReflectionBuilder._static_classes )
 			{
 				if ( classAnnotationData.name == superClassName )
