@@ -185,16 +185,7 @@ class ReflectionBuilder
 
 					case FFun( func ) :
 						var argumentDatas : Array<ArgumentReflectionData> = [];
-						for ( arg in func.args )
-						{
-							switch ( arg.type )
-							{
-								case TPath( p ):
-									argumentDatas.push( { name: arg.name, type: MacroUtil.getFQCNFromComplexType( arg.type ) } );
-
-								default:
-							}
-						}
+						for ( arg in func.args ) argumentDatas.push( { name: arg.name, type: MacroUtil.getFQCNFromComplexType( arg.type ) } );
 
 						if ( f.name == "new" )
 						{
