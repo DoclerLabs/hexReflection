@@ -16,6 +16,8 @@ import hex.unittest.assertion.Assert;
 class ReflectionBuilderTest
 {
     static var _annotationProvider : IClassReflectionDataProvider;
+	
+	public function new() { }
 
     @BeforeClass
     public static function beforeClass() : Void
