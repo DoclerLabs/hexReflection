@@ -214,16 +214,10 @@ class ReflectionBuilder
 				}
 			}
 		}
-
-		var data = { name:Context.getLocalClass().get().module, superClassName: superClassName, constructor: constructorAnnotationData, properties:properties, methods:methods };
+		
+		var data = { name: MacroUtil.getClassName( Context.getLocalClass().get() ), superClassName: superClassName, constructor: constructorAnnotationData, properties:properties, methods:methods };
 		ReflectionBuilder._static_classes.push( data );
 		return classFields;
 	}
 	#end
-}
-
-typedef MemberDescription =
-{
-	var name : String;
-	var type : String;
 }
