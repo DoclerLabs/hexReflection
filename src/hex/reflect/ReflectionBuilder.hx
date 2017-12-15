@@ -30,7 +30,8 @@ class ReflectionBuilder
 		//get data result
 		var data = ReflectionBuilder._static_classes[ ReflectionBuilder._static_classes.length - 1 ];
 
-		//append the expression as a field
+		//append the expression as a field to debug reflection data
+		#if debugReflection
 		fields.push(
 		{
 			name:  ReflectionBuilder.REFLECTION,
@@ -38,6 +39,7 @@ class ReflectionBuilder
 			kind: FieldType.FVar( macro: hex.reflect.ClassReflectionData, macro $v{ data } ), 
 			pos: Context.currentPos(),
 		});
+		#end
 		
 		return fields;
 	}
