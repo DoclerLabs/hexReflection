@@ -1,5 +1,6 @@
 package hex.reflect;
 
+#if debugReflection
 import hex.reflect.ClassReflectionDataProvider;
 import hex.reflect.IClassReflectionDataProvider;
 import hex.reflect.mock.IMockAnnotationContainer;
@@ -8,6 +9,7 @@ import hex.reflect.mock.MockContainerWithoutAnnotation;
 import hex.reflect.mock.MockExtendedAnnotationContainer;
 import hex.reflect.mock.MockReflectionContainer;
 import hex.unittest.assertion.Assert;
+#end
 
 /**
  * ...
@@ -15,7 +17,10 @@ import hex.unittest.assertion.Assert;
  */
 class ReflectionBuilderTest
 {
-    static var _annotationProvider : IClassReflectionDataProvider;
+	public function new() { }
+	
+#if debugReflection
+	static var _annotationProvider : IClassReflectionDataProvider;
 
     @BeforeClass
     public static function beforeClass() : Void
@@ -296,4 +301,5 @@ class ReflectionBuilderTest
         Assert.equals( "Int", method.arguments[ 0 ].type );
         Assert.equals( "Array<Array<String>>", method.arguments[ 1 ].type );
 	}
+#end
 }

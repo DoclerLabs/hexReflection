@@ -30,7 +30,8 @@ class ReflectionBuilder
 		//get data result
 		var data = ReflectionBuilder._static_classes[ ReflectionBuilder._static_classes.length - 1 ];
 
-		//append the expression as a field
+		//append the expression as a field to debug reflection data
+		#if debugReflection
 		fields.push(
 		{
 			name:  ReflectionBuilder.REFLECTION,
@@ -38,6 +39,7 @@ class ReflectionBuilder
 			kind: FieldType.FVar( macro: hex.reflect.ClassReflectionData, macro $v{ data } ), 
 			pos: Context.currentPos(),
 		});
+		#end
 		
 		return fields;
 	}
@@ -185,16 +187,7 @@ class ReflectionBuilder
 
 					case FFun( func ) :
 						var argumentDatas : Array<ArgumentReflectionData> = [];
-						for ( arg in func.args )
-						{
-							switch ( arg.type )
-							{
-								case TPath( p ):
-									argumentDatas.push( { name: arg.name, type: MacroUtil.getFQCNFromComplexType( arg.type ) } );
-
-								default:
-							}
-						}
+						for ( arg in func.args ) argumentDatas.push( { name: arg.name, type: MacroUtil.getFQCNFromComplexType( arg.type ) } );
 
 						if ( f.name == "new" )
 						{
@@ -223,16 +216,10 @@ class ReflectionBuilder
 				}
 			}
 		}
-
-		var data = { name:Context.getLocalClass().get().module, superClassName: superClassName, constructor: constructorAnnotationData, properties:properties, methods:methods };
+		
+		var data = { name: MacroUtil.getClassName( Context.getLocalClass().get() ), superClassName: superClassName, constructor: constructorAnnotationData, properties:properties, methods:methods };
 		ReflectionBuilder._static_classes.push( data );
 		return classFields;
 	}
 	#end
-}
-
-typedef MemberDescription =
-{
-	var name : String;
-	var type : String;
 }
