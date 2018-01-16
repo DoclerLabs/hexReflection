@@ -198,7 +198,7 @@ class ReflectionBuilder
 							if ( superClassAnnotationData != null )
 							{
 								var methodName = f.name;
-								var superMethodAnnotationDatas : Array<MethodReflectionData> = superClassAnnotationData.methods;
+								var superMethodAnnotationDatas = superClassAnnotationData.methods;
 								for ( superMethodAnnotationData in  superMethodAnnotationDatas )
 								{
 									if ( superMethodAnnotationData.name == methodName )
@@ -211,6 +211,9 @@ class ReflectionBuilder
 
 							methods.push( { annotations: annotationDatas, arguments: argumentDatas, name: f.name } );
 						}
+						
+					case FProp( get, set, t, e ):
+						Context.warning( "Virtual setters cannot be injected, use normal properties.", Context.currentPos() );
 
 					default: null;
 				}
