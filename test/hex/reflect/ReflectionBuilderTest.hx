@@ -1,8 +1,8 @@
 package hex.reflect;
 
+import hex.collection.HashMap;
+
 #if debugReflection
-import hex.reflect.ClassReflectionDataProvider;
-import hex.reflect.IClassReflectionDataProvider;
 import hex.reflect.mock.IMockAnnotationContainer;
 import hex.reflect.mock.MockAnnotationContainer;
 import hex.reflect.mock.MockContainerWithoutAnnotation;
@@ -20,7 +20,7 @@ class ReflectionBuilderTest
 	public function new() { }
 	
 #if debugReflection
-	static var _annotationProvider : IClassReflectionDataProvider;
+	static var _annotationProvider : ClassReflectionDataProvider;
 
     @BeforeClass
     public static function beforeClass() : Void
@@ -302,4 +302,36 @@ class ReflectionBuilderTest
         Assert.equals( "Array<Array<String>>", method.arguments[ 1 ].type );
 	}
 #end
+}
+
+class ClassReflectionDataProvider
+{
+	var _metadataName       : String;
+    var _annotatedClasses   : HashMap<Class<Dynamic>, ClassReflectionData>;
+	
+	public function new( type : Class<Dynamic> )
+    {
+        this._metadataName      = Type.getClassName( type );
+        this._annotatedClasses  = new HashMap();
+    }
+	
+	public function getClassReflectionData( type : Class<Dynamic> ) : ClassReflectionData
+    {
+        return this._annotatedClasses.containsKey( type ) ? this._annotatedClasses.get( type ) : this._getClassReflectionData( type );
+    }
+	
+	function _getClassReflectionData( type : Class<Dynamic>)  : ClassReflectionData
+    {
+		var field : ClassReflectionData = Reflect.getProperty( type, ReflectionBuilder.REFLECTION );
+		
+		if ( field != null )
+		{
+			this._annotatedClasses.put( type, field );
+			return field;
+		}
+		else
+        {
+            return null;
+        }
+    }
 }
