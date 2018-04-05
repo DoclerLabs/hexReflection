@@ -11,7 +11,9 @@ import hex.util.MacroUtil;
 class ReflectionBuilder 
 {
 	//static property name that will handle the data
+	#if debugReflection
 	public static inline var REFLECTION : String = "__REFLECTION";
+	#end
 	
 	public static var _static_classes : Array<ClassReflectionData> = [];
 

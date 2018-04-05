@@ -304,6 +304,7 @@ class ReflectionBuilderTest
 #end
 }
 
+#if debugReflection
 class ClassReflectionDataProvider
 {
 	var _metadataName       : String;
@@ -335,3 +336,4 @@ class ClassReflectionDataProvider
         }
     }
 }
+#end
