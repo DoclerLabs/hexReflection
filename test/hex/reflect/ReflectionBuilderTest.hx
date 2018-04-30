@@ -58,7 +58,7 @@ class ReflectionBuilderTest
         Assert.equals( 2, data.constructor.arguments.length, "argument length should be 2" );
         var arg0 = data.constructor.arguments[ 0 ];
         Assert.equals( "domain", arg0.name, "argument name should be the same" );
-        Assert.equals( "hex.domain.Domain", arg0.type, "argument type should be the same" );
+        Assert.equals( "String", arg0.type, "argument type should be the same" );
 
         var arg1 = data.constructor.arguments[ 1 ];
         Assert.equals( "logger", arg1.name, "argument name should be the same" );
@@ -162,7 +162,7 @@ class ReflectionBuilderTest
 
         var arg1 = data.constructor.arguments[ 1 ];
         Assert.equals( "extendedDomain", arg1.name, "argument name should be the same" );
-        Assert.equals( "hex.domain.Domain", arg1.type, "argument type should be the same" );
+        Assert.equals( "String", arg1.type, "argument type should be the same" );
 
         var arg2 = data.constructor.arguments[ 2 ];
         Assert.equals( "extendedLogger", arg2.name, "argument name should be the same" );
