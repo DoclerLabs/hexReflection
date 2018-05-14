@@ -1,6 +1,5 @@
 package hex.reflect.mock;
 
-import hex.domain.Domain;
 import hex.log.ILogger;
 import hex.log.Logger;
 
@@ -15,7 +14,7 @@ class MockExtendedAnnotationContainer extends MockAnnotationContainer
 
     @Inject( "d", 3, false )
     @ConstructID( 9 )
-    public function new( a : Array<String>, extendedDomain : Domain, extendedLogger : ILogger )
+    public function new( a : Array<String>, extendedDomain : String, extendedLogger : ILogger )
     {
         super( extendedDomain, extendedLogger );
     }

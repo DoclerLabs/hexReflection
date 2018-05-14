@@ -1,6 +1,5 @@
 package hex.reflect.mock;
 
-import hex.domain.Domain;
 import hex.log.ILogger;
 import hex.log.Logger;
 
@@ -20,7 +19,7 @@ class MockAnnotationContainer extends MockContainerWithoutAnnotation implements 
 	public var propertyWithoutAnnotation : String;
 
 	@Inject( "a", 2, true )
-	public function new( domain : Domain, logger : ILogger )
+	public function new( domain : String, logger : ILogger )
 	{
 		super( logger );
 	}

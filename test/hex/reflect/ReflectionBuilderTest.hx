@@ -1,8 +1,8 @@
 package hex.reflect;
 
+import hex.collection.HashMap;
+
 #if debugReflection
-import hex.reflect.ClassReflectionDataProvider;
-import hex.reflect.IClassReflectionDataProvider;
 import hex.reflect.mock.IMockAnnotationContainer;
 import hex.reflect.mock.MockAnnotationContainer;
 import hex.reflect.mock.MockContainerWithoutAnnotation;
@@ -20,7 +20,7 @@ class ReflectionBuilderTest
 	public function new() { }
 	
 #if debugReflection
-	static var _annotationProvider : IClassReflectionDataProvider;
+	static var _annotationProvider : ClassReflectionDataProvider;
 
     @BeforeClass
     public static function beforeClass() : Void
@@ -58,7 +58,7 @@ class ReflectionBuilderTest
         Assert.equals( 2, data.constructor.arguments.length, "argument length should be 2" );
         var arg0 = data.constructor.arguments[ 0 ];
         Assert.equals( "domain", arg0.name, "argument name should be the same" );
-        Assert.equals( "hex.domain.Domain", arg0.type, "argument type should be the same" );
+        Assert.equals( "String", arg0.type, "argument type should be the same" );
 
         var arg1 = data.constructor.arguments[ 1 ];
         Assert.equals( "logger", arg1.name, "argument name should be the same" );
@@ -162,7 +162,7 @@ class ReflectionBuilderTest
 
         var arg1 = data.constructor.arguments[ 1 ];
         Assert.equals( "extendedDomain", arg1.name, "argument name should be the same" );
-        Assert.equals( "hex.domain.Domain", arg1.type, "argument type should be the same" );
+        Assert.equals( "String", arg1.type, "argument type should be the same" );
 
         var arg2 = data.constructor.arguments[ 2 ];
         Assert.equals( "extendedLogger", arg2.name, "argument name should be the same" );
@@ -303,3 +303,37 @@ class ReflectionBuilderTest
 	}
 #end
 }
+
+#if debugReflection
+class ClassReflectionDataProvider
+{
+	var _metadataName       : String;
+    var _annotatedClasses   : HashMap<Class<Dynamic>, ClassReflectionData>;
+	
+	public function new( type : Class<Dynamic> )
+    {
+        this._metadataName      = Type.getClassName( type );
+        this._annotatedClasses  = new HashMap();
+    }
+	
+	public function getClassReflectionData( type : Class<Dynamic> ) : ClassReflectionData
+    {
+        return this._annotatedClasses.containsKey( type ) ? this._annotatedClasses.get( type ) : this._getClassReflectionData( type );
+    }
+	
+	function _getClassReflectionData( type : Class<Dynamic>)  : ClassReflectionData
+    {
+		var field : ClassReflectionData = Reflect.getProperty( type, ReflectionBuilder.REFLECTION );
+		
+		if ( field != null )
+		{
+			this._annotatedClasses.put( type, field );
+			return field;
+		}
+		else
+        {
+            return null;
+        }
+    }
+}
+#end
