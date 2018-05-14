@@ -5,3 +5,5 @@
 
 -cp test
 -D debug=true
+
+-D debugReflection=1
