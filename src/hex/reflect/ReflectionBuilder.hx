@@ -4,6 +4,8 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import hex.util.MacroUtil;
 
+using hex.error.Error;
+
 /**
  * ...
  * @author Francis Bourre
@@ -17,11 +19,8 @@ class ReflectionBuilder
 	
 	public static var _static_classes : Array<ClassReflectionData> = [];
 
-	/** @private */
-    function new()
-    {
-        throw new hex.error.PrivateConstructorException();
-    }
+	/** @private */ function new() throw new PrivateConstructorException( "This class can't be instantiated." );
+
 	macro public static function readMetadata( metadataExpr : Expr, allowedAnnotations : Array<String> = null ) : Array<Field>
 	{
 		var localClass = Context.getLocalClass().get();
