@@ -19,7 +19,7 @@ class ReflectionBuilder
 	
 	public static var _static_classes : Array<ClassReflectionData> = [];
 
-	/** @private */ function new() throw new PrivateConstructorException( "This class can't be instantiated." );
+	/** @private */ function new() throw new PrivateConstructorException();
 
 	macro public static function readMetadata( metadataExpr : Expr, allowedAnnotations : Array<String> = null ) : Array<Field>
 	{
